@@ -1,8 +1,10 @@
 import { Post } from './Post'
+import { Header } from './components/Header'
 
 export function App() {
   return (
       <>
+        <Header />
         <Post 
           team="Vasco" 
           title="Contratações do Vasco: veja quem chega e quem sai na segunda janela de 2023" 
