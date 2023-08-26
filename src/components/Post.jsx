@@ -1,30 +1,44 @@
+/* eslint-disable react/jsx-key */
+import { format, formatDistanceToNow } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
 import { Avatar } from './Avatar';
 import { Comment } from './Comment';
 import styles from './Post.module.css';
 
-export function Post(props) {
-  console.log(props)
+export function Post({ author, publishedAt, content }) {
+  const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH:mm'h'", {
+    locale: ptBR
+  });
+
+  const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, {
+    locale: ptBR,
+    addSuffix: true
+  });
+
   return (
     <article className={styles.post}>
       <header>
         <div className={styles.author}>
-          <Avatar src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=120&q=50" />
+          <Avatar src={author.avatarUrl} />
           
           <div className={styles.authorInfo}>
-            <strong>Brian Baker</strong>
-            <span>Web Developer</span>
+            <strong>{author.name}</strong>
+            <span>{author.role}</span>
           </div>
         </div>
 
-        <time title="24 de agosto às 18:08h" dateTime="2023-08-24 18:08:00">Publicado há 1h</time>
+        <time title={publishedDateFormatted} dateTime={publishedAt.toISOString()}>
+          {publishedDateRelativeToNow}
+        </time>
       </header>
 
       <div className={styles.content}>
-        <p>consectetur adipisicing elit</p>
-
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum recusandae velit mollitia laborum culpa unde facilis dolorum sequi temporibus quasi iusto totam reprehenderit itaque perspiciatis eveniet asperiores, libero, accusantium fuga!</p>
-
-        <p><a href="http://">itaque perspiciatis</a></p>
+        {content.map(line => {
+          if (line.type === 'link') {
+            return <p><a href='#'>{line.content}</a></p>;
+          }
+          return <p>{line.content}</p>;
+        })}
       </div>
 
       <form className={styles.commentForm}>
